@@ -1,5 +1,5 @@
 # bedrockray
-run a bedrock minecraft server with ray
+run a bedrock minecraft server with ray. only linux amd64 supported for now.
 ## how to use?
 it is recommnded to fork the repo so you can edit the config.
 
