@@ -10,12 +10,17 @@
     {
       "Tool" : "./bedrockray",
       "Type" : "deploy",
-      "IfAvailable" : true
+      "Options" :  {
+        "IfAvailable" : true
+      }
     },
     {
       "Tool" : ".\\bedrockray.exe",
       "Type" : "deploy",
-      "IfAvailable" : true
+      "IfAvailable" : true,
+      "Options" :  {
+        "IfAvailable" : true
+      }
     }
   ]
 }
