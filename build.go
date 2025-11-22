@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -40,12 +38,6 @@ func main() {
 		fmt.Println("preparing to create server", mcid)
 		os.Mkdir(serverPath, 0755)
 
-		mcserverdl := os.Getenv("MCSERVERDL")
-		if mcserverdl == "" {
-			mcserverdl = "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.21.124.2.zip"
-		}
-		fmt.Println("now pulling server from", mcserverdl)
-
 		clean := func ()  {
 			err := os.Remove(serverPath)
 			if err != nil {
@@ -54,24 +46,20 @@ func main() {
 			os.Exit(1)
 		}
 
-		resp, err := http.Get(mcserverdl)
-		if err != nil {
-			fmt.Println("FATAL: could not start server download!")
-			clean()
-		}
-
-		serverZipPath := filepath.Join(serverPath, "server.zip")
-		serverZip, err := os.Open(serverZipPath)
+		fmt.Println("now reading server zip...")
+		ba, err :=  os.ReadFile("./server.zip")
 		if err != nil {
 			fmt.Println("FATAL: could not open server zip!")
 			clean()
 		}
 
-		_, err = io.Copy(serverZip, resp.Body)
+		serverZipPath := filepath.Join(serverPath, "server.zip")
+		err = os.WriteFile(serverZipPath, ba, 0755)
 		if err != nil {
-			fmt.Println("FATAL: could not unzip server!")
+			fmt.Println("FATAL: could not write server zip!")
 			clean()
 		}
+
 		cmd := exec.Command("tar", "-xf", "server.zip") //tar is also on windows
 		cmd.Path = serverPath
 
