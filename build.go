@@ -146,7 +146,7 @@ func main() {
 	}
 
 	fmt.Println("server ready, now starting server.")
-	serverBinPath := filepath.Join(serverPath, "bedrock-server")
+	serverBinPath := filepath.Join(serverPath, "bedrock_server")
 	if runtime.GOOS == "windows" {
 		serverBinPath = filepath.Join(serverBinPath, "bedrock_server.exe")
 	}
