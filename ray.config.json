@@ -1,0 +1,15 @@
+{
+  "Version" : "v1",
+  "Pipeline" : [
+    {
+      "Tool" : "go",
+      "Command" : ["build"],
+      "Type" : "build"
+    }, 
+    {
+      "Tool" : "node",
+      "Command" : ["index.js"],
+      "Type" : "deploy"
+    }
+  ]
+}
