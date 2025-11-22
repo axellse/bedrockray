@@ -7,9 +7,14 @@
       "Type" : "build"
     }, 
     {
-      "Tool" : "node",
-      "Command" : ["index.js"],
-      "Type" : "deploy"
+      "Tool" : "./bedrockray",
+      "Type" : "deploy",
+      "IfAvailable" : true
+    },
+    {
+      "Tool" : ".\\bedrockray.exe",
+      "Type" : "deploy",
+      "IfAvailable" : true
     }
   ]
 }
