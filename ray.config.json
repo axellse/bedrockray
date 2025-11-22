@@ -1,5 +1,6 @@
 {
   "Version" : "v1",
+  "NotWebsite" : true,
   "Pipeline" : [
     {
       "Tool" : "go",
