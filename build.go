@@ -24,7 +24,7 @@ func main() {
 
 	if _, err := os.Stat(mcdir); errors.Is(err, os.ErrNotExist) {
   		fmt.Println(mcdir, "does not exist, creating...")
-		err := os.MkdirAll(mcdir, 0755)
+		err := os.MkdirAll(mcdir, 0777)
 		if err != nil {
 			fmt.Println("FATAL: failed creating mcdir:", err)
 			os.Exit(1)
@@ -36,7 +36,7 @@ func main() {
 	if _, err := os.Stat(serverPath); errors.Is(err, os.ErrNotExist) {
 		fmt.Println("server does not exist!")
 		fmt.Println("preparing to create server", mcid)
-		os.Mkdir(serverPath, 0755)
+		os.Mkdir(serverPath, 0777)
 
 		clean := func ()  {
 			err := os.Remove(serverPath)
@@ -54,7 +54,7 @@ func main() {
 		}
 
 		serverZipPath := filepath.Join(serverPath, "server.zip")
-		err = os.WriteFile(serverZipPath, ba, 0755)
+		err = os.WriteFile(serverZipPath, ba, 0777)
 		if err != nil {
 			fmt.Println("FATAL: could not write server zip!")
 			clean()
@@ -64,8 +64,8 @@ func main() {
 		cmd.Path = serverPath
 
 		err = cmd.Run()
-		if err !=  nil {
-			fmt.Println("FATAL: failed unzipping server")
+		if err != nil {
+			fmt.Println("FATAL: failed unzipping server:", err)
 			clean()
 		}
 
