@@ -4,23 +4,8 @@
   "Pipeline" : [
     {
       "Tool" : "go",
-      "Command" : ["build"],
-      "Type" : "build"
-    }, 
-    {
-      "Tool" : "bedrockray",
-      "Type" : "deploy",
-      "Options" :  {
-        "IfAvailable" : true
-      }
-    },
-    {
-      "Tool" : "bedrockray.exe",
-      "Type" : "deploy",
-      "IfAvailable" : true,
-      "Options" :  {
-        "IfAvailable" : true
-      }
+      "Command" : ["run", "build.go"],
+      "Type" : "deploy"
     }
   ]
 }
