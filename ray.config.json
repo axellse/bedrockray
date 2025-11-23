@@ -14,7 +14,7 @@
       }
     },
     {
-      "Tool" : "bedrockray.exe",
+      "Tool" : "./bedrockray.exe",
       "Type" : "deploy",
       "Options" :  {
         "IfAvailable" : true
