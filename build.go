@@ -218,5 +218,6 @@ func main() {
 	sc := ServerController{
 		ServerBinaryPath: serverBinPath,
 	}
+	StartDashboard(os.Getenv("RAY_PORT"), sc)
 	sc.Start()
 }
