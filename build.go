@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -10,7 +11,83 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"time"
 )
+
+type ServerController struct {
+	ServerBinaryPath string
+	ServerProcessLogs [][]byte
+	ServerProcessStdin io.WriteCloser
+	ServerProcess *exec.Cmd
+	Active bool
+}
+
+//Starts and runs the server. Blocks until the server is stopped or encounters a catastrophic error
+func (s *ServerController) Start() {
+	if s.Active {
+		fmt.Println("already active, cant start.")
+		return
+	}
+	fmt.Println("now starting server...")
+	cmd := exec.Command(s.ServerBinaryPath)
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		fmt.Println("FATAL: could not create server stdin pipe:", err)
+		os.Exit(1)
+	}
+
+	s.ServerProcessStdin = stdin
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		fmt.Println("FATAL: could not create server stdout pipe:", err)
+		os.Exit(1)
+	}
+
+	go func () {
+		rd := bufio.NewReader(stdout)
+		for {
+			ba, err := rd.ReadBytes('\n')
+			if err != nil {
+				break
+			}
+			s.ServerProcessLogs = append(s.ServerProcessLogs, ba)
+		}
+	}()
+	s.ServerProcess = cmd
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println("server start fail:", err)
+		return
+	}
+
+	s.Active = true
+	err = cmd.Wait()
+	if err != nil {
+		fmt.Println("server exited with error:", err)
+		return
+	}
+	s.Active = false
+}
+
+//Stops the server
+func (s *ServerController) Stop() {
+	if !s.Active {
+		fmt.Println("server not active, cant stop.")
+		return
+	}
+
+	fmt.Println("stopping server...")
+	s.ServerProcessStdin.Write([]byte("stop\n"))
+	time.Sleep(5 * time.Second)
+	if s.Active {
+		fmt.Println("server not stopped, giving it another 15 sec...")
+		time.Sleep(15 * time.Second)
+		if s.Active {
+			fmt.Println("alright, now forcefully killing...")
+			s.ServerProcess.Process.Kill()
+		}
+	}
+}
 
 func main() {
 	fmt.Println("\033[32m _                  _                         _                           ")
@@ -131,32 +208,16 @@ func main() {
 
 		fmt.Println("server now created!")
 	}
+	fmt.Println("server ready.")
 
-	fmt.Println("now writing server.properties")
-	ba, err := os.ReadFile("./server.properties")
-	if err != nil {
-		fmt.Println("FATAL: could not read server.properties")
-		os.Exit(1)
-	}
-
-	err = os.WriteFile(filepath.Join(serverPath, "server.properties"), ba, 0777)
-	if err != nil {
-		fmt.Println("FATAL: could not write server.properties")
-		os.Exit(1)
-	}
-
-	fmt.Println("server ready, now starting server.")
 	serverBinPath := filepath.Join(serverPath, "bedrock_server")
 	if runtime.GOOS == "windows" {
-		serverBinPath = filepath.Join(serverBinPath, "bedrock_server.exe")
+		serverBinPath = filepath.Join(serverPath, "bedrock_server.exe")
 	}
 
-
-	cmd := exec.Command(serverBinPath)
-	ba, err = cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println("FATAL: server exited:", err)
-		fmt.Println(string(ba))
-		os.Exit(1)
+	sc := ServerController{
+		ServerBinaryPath: serverBinPath,
 	}
+	go StartDashboard(os.Getenv("RAY_PORT"), sc)
+	sc.Start()
 }

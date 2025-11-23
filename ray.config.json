@@ -1,6 +1,6 @@
 {
-  "Version" : "v1",
   "NotWebsite" : true,
+  "Version" : "v1",
   "Pipeline" : [
     {
       "Tool" : "go",
@@ -8,14 +8,14 @@
       "Type" : "build"
     }, 
     {
-      "Tool" : "./bedrockray",
+      "Tool" : "bedrockray",
       "Type" : "deploy",
       "Options" :  {
         "IfAvailable" : true
       }
     },
     {
-      "Tool" : ".\\bedrockray.exe",
+      "Tool" : "bedrockray.exe",
       "Type" : "deploy",
       "IfAvailable" : true,
       "Options" :  {

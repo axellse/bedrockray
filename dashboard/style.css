@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    background-color: var(--bg-color)
+
+}
+
+:root {
+    --sidebar-color: rgb(13, 13, 13);
+    --bg-color: rgb(20,20,20);
+    --hover-color: rgb(26, 26, 26);
+}
+
+.sidebar {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5.5rem;
+    background-color: var(--sidebar-color);
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 1rem 0 1rem;
+    padding: 0.5rem;
+}
+
+.sidebar button {
+    background-color: var(--sidebar-color);
+    width: 100%;
+    aspect-ratio: 1;
+    border: 0;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Lexend Deca", sans-serif;
+    cursor: pointer;
+    border-radius: 0.75rem;
+}
+
+.sidebar button:hover {
+    background-color: var(--hover-color);
+}
+
+.sidebar button:active {
+    transform: scale(0.93);
+    transition: transform 0.05s linear;
+}
